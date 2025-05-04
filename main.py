@@ -3,7 +3,7 @@ import numpy as np
 import pickle
 import os
 from tensorflow.keras.models import load_model
-from utils.dpf_logic import hitung_dpf  # Import fungsi DPF dari modul terpisah
+from utils.dpf_logic import hitung_dpf
 
 # --- Load CNN Model ---
 model_path = os.path.join("model", "cnn_model.h5")  # atau cnn_model.keras
