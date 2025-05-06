@@ -1,9 +1,4 @@
-
 def hitung_dpf(riwayat_orangtua, jenis_kelamin_anak, riwayat_kakek_nenek):
-    """
-    Hitung nilai DPF berdasarkan riwayat keluarga dan jenis kelamin.
-    Range nilai DPF 0.08 - 1.32
-    """
     base_dpf = 0.08
 
     if riwayat_orangtua == 'Kedua':
