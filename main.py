@@ -60,10 +60,13 @@ if st.session_state.page == 1:
 elif st.session_state.page == 2:
     st.header("Data Diri")
 
-    st.session_state.age = st.number_input("Usia", min_value=0, max_value=120, step=1, value=st.session_state.get("age"))
-    st.session_state.jenis_kelamin = st.selectbox("Jenis Kelamin", ["Laki-laki", "Perempuan"], index=["Laki-laki", "Perempuan"].
-                                                  index(st.session_state.get("jenis_kelamin", "Laki-laki")))
+    show_warning = False
 
+    st.session_state.age = st.number_input("Usia", min_value=1, max_value=120, step=1, value=st.session_state.get("age"))
+    st.session_state.jenis_kelamin = st.selectbox("Jenis Kelamin", ["Laki-laki", "Perempuan"], index=["Laki-laki", "Perempuan"].
+                                                  index(st.session_state.get("jenis_kelamin", "Perempuan")))
+
+    # validasi
     if st.session_state.jenis_kelamin != "Perempuan":
         st.session_state.pregnancies = 0
         st.number_input("Jumlah Kehamilan", value=0, disabled=True)
@@ -71,11 +74,20 @@ elif st.session_state.page == 2:
     else:
         st.session_state.pregnancies = st.number_input("Jumlah Kehamilan", min_value=0, max_value=20, step=1, value=st.session_state.get("pregnancies", 0))
 
+    error_flag = False
+    if st.session_state.age is None or st.session_state.age == 0:
+        st.warning("⚠️ Usia tidak boleh 0.")
+        error_flag = True
+
     col1, col2, col3, col4, col5 = st.columns([1, 2, 1, 2, 1])
     with col1:
         st.button("Kembali", on_click=prev_page)
     with col4:
-        st.button("Lanjut", on_click=next_page)
+        if st.button("Lanjut"):
+            if not error_flag:
+                next_page()
+            else:
+                st.error("Mohon lengkapi data yang wajib diisi terlebih dahulu.")
 
 # ---------------- Page 3: Data Kesehatan ----------------
 elif st.session_state.page == 3:
@@ -101,11 +113,29 @@ elif st.session_state.page == 3:
         st.session_state.skin_thickness = st.number_input("Ketebalan Lipatan Kulit Trisep (mm)", 3.0, 100.0, step=1.0, value=st.session_state.get("skin_thickness", "Input here"))
         st.session_state.insulin = st.number_input("Kadar Insulin (muU/ml)", 2.0, 1000.0, step=1.0, value=st.session_state.get("insulin", "Input here"))
 
+    # Validasi input
+    error_flag = False
+
+    # Validasi jika ada field yang kosong
+    if st.session_state.glucose == 0:
+        st.warning("⚠️ Mohon isi kadar glukosa.")
+        error_flag = True
+    if st.session_state.blood_pressure == 0:
+        st.warning("⚠️ Mohon isi tekanan darah diastolik.")
+        error_flag = True
+    if st.session_state.skin_thickness == 0:
+        st.warning("⚠️ Mohon isi ketebalan lipatan kulit.")
+        error_flag = True
+    if st.session_state.insulin == 0:
+        st.warning("⚠️ Mohon isi kadar insulin.")
+        error_flag = True
+
     col1, col2 = st.columns(2)
     with col1:
         st.button("Kembali", on_click=prev_page)
     with col2:
-        st.button("Lanjut", on_click=next_page)
+        st.button("Lanjut", on_click=next_page,
+                  disabled=error_flag)
 
 # ---------------- Page 4: BMI dan Riwayat ----------------
 elif st.session_state.page == 4:
