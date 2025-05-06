@@ -90,16 +90,16 @@ elif st.session_state.page == 3:
         st.session_state.skin_thickness = 27.74
         st.session_state.insulin = 102.05
 
-        st.number_input("Glukosa", value=st.session_state.glucose, disabled=True)
-        st.number_input("Tekanan Darah", value=st.session_state.blood_pressure, disabled=True)
-        st.number_input("Ketebalan Lipatan Kulit Trisep", value=st.session_state.skin_thickness, disabled=True)
-        st.number_input("Insulin", value=st.session_state.insulin, disabled=True)
+        st.number_input("Kadar Glukosa", value=st.session_state.glucose, disabled=True)
+        st.number_input("Tekanan Darah Diastolik (mm/Hg)", value=st.session_state.blood_pressure, disabled=True)
+        st.number_input("Ketebalan Lipatan Kulit Trisep (mm)", value=st.session_state.skin_thickness, disabled=True)
+        st.number_input("Kadar Insulin (muU/ml)", value=st.session_state.insulin, disabled=True)
         st.info("Nilai default digunakan karena belum pernah checkup.")
     else:
-        st.session_state.glucose = st.number_input("Glukosa", 30, 200, step=1, value=st.session_state.get("glucose", "Input here"))
-        st.session_state.blood_pressure = st.number_input("Tekanan Darah", 40, 150, step=1, value=st.session_state.get("blood_pressure", "Input here"))
-        st.session_state.skin_thickness = st.number_input("Ketebalan Lipatan Kulit Trisep", 3.0, 100.0, step=1.0, value=st.session_state.get("skin_thickness", "Input here"))
-        st.session_state.insulin = st.number_input("Insulin", 2.0, 1000.0, step=1.0, value=st.session_state.get("insulin", "Input here"))
+        st.session_state.glucose = st.number_input("Kadar Glukosa", 30, 200, step=1, value=st.session_state.get("glucose", "Input here"))
+        st.session_state.blood_pressure = st.number_input("Tekanan Darah Diastolik (mm/Hg)", 40, 150, step=1, value=st.session_state.get("blood_pressure", "Input here"))
+        st.session_state.skin_thickness = st.number_input("Ketebalan Lipatan Kulit Trisep (mm)", 3.0, 100.0, step=1.0, value=st.session_state.get("skin_thickness", "Input here"))
+        st.session_state.insulin = st.number_input("Kadar Insulin (muU/ml)", 2.0, 1000.0, step=1.0, value=st.session_state.get("insulin", "Input here"))
 
     col1, col2 = st.columns(2)
     with col1:
