@@ -31,17 +31,18 @@ def prev_page():
 if st.session_state.page == 1:
     st.title("🩺 Prediksi Risiko Diabetes")
     st.write("""
-    Selamat datang! Aplikasi ini membantu memprediksi risiko diabetes berdasarkan data pribadi dan kesehatan Anda menggunakan
-             salah satu model deep learning, yakni Convolutional Neural Network.
-    
-    **Ketentuan:**
-    - Data Anda akan digunakan hanya untuk keperluan simulasi.
-    - Mohon isi data dengan sebenar-benarnya.
-    - Hasil hanyalah prediksi berdasarkan data yang ada, dengan tujuan
-              pencegahan terhadap penyakit diabetes secara dini.
+    Selamat datang di aplikasi prediksi risiko diabetes! Aplikasi ini menggunakan model deep learning **Convolutional Neural Network (CNN)** untuk membantu memperkirakan risiko diabetes berdasarkan data pribadi dan kesehatan Anda.
 
-    Apakah Anda sudah membaca dengan seksama ketentuan diatas?
+    **Ketentuan Penggunaan:**
+    - Data yang Anda masukkan hanya digunakan untuk keperluan simulasi dan **tidak akan disimpan maupun dibagikan** kepada pihak lain.
+    - Mohon isi data dengan sebenar-benarnya agar hasil prediksi lebih akurat.
+    - Hasil prediksi ini **bukan diagnosis medis**, melainkan estimasi berbasis data yang bertujuan untuk mendukung **deteksi dini dan pencegahan** diabetes.
+
+    Dataset yang digunakan adalah [Pima Indians Diabetes Database](https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database).
+
+    Apakah Anda sudah membaca dan memaham ketentuan di atas?
     """)
+
 
     ketentuan = st.checkbox(
     "Ya, saya sudah membaca dengan seksama dan setuju memberikan data pribadi dan data kesehatan saya", 
@@ -62,17 +63,29 @@ elif st.session_state.page == 2:
 
     show_warning = False
 
-    st.session_state.age = st.number_input("Usia", min_value=1, max_value=120, step=1, value=st.session_state.get("age"))
+    st.session_state.age = st.number_input("Usia", min_value=5, max_value=120, step=1, value=st.session_state.get("age"))
     st.session_state.jenis_kelamin = st.selectbox("Jenis Kelamin", ["Laki-laki", "Perempuan"], index=["Laki-laki", "Perempuan"].
                                                   index(st.session_state.get("jenis_kelamin", "Perempuan")))
 
-    # validasi
-    if st.session_state.jenis_kelamin != "Perempuan":
+    if st.session_state.jenis_kelamin != "Perempuan" or (
+    st.session_state.age is not None and st.session_state.age <= 12):
         st.session_state.pregnancies = 0
-        st.number_input("Jumlah Kehamilan", value=0, disabled=True)
-        st.info("Jumlah kehamilan hanya relevan untuk perempuan.")
+        st.number_input("Berapa kali Anda pernah hamil?", value=0, disabled=True)
+
+        if st.session_state.jenis_kelamin != "Perempuan":
+            st.info("Jumlah kehamilan tidak relevan untuk laki-laki.")
+        else:
+            st.info("Jumlah kehamilan hanya relevan untuk perempuan berusia di atas 12 tahun.")
     else:
-        st.session_state.pregnancies = st.number_input("Jumlah Kehamilan", min_value=0, max_value=20, step=1, value=st.session_state.get("pregnancies", 0))
+        st.session_state.pregnancies = st.number_input(
+        "Berapa kali Anda pernah hamil?",
+        min_value=0,
+        max_value=20,
+        step=1,
+        value=st.session_state.get("pregnancies", 0)
+    )
+
+
 
     error_flag = False
     if st.session_state.age is None or st.session_state.age == 0:
@@ -93,10 +106,24 @@ elif st.session_state.page == 2:
 elif st.session_state.page == 3:
     st.header("Data Kesehatan")
 
-    st.session_state.checkup = st.checkbox("Apakah sebelumnya pernah checkup kesehatan?", 
-                                           value=st.session_state.get("checkup", False))
+    st.subheader("🩺 Riwayat Check-up Kesehatan")
+
+    col1, col2 = st.columns(2)
+    with col1:
+        if st.button("✅ Ya"):
+            st.session_state.checkup = True
+
+    with col2:
+        if st.button("❌ Tidak"):
+            st.session_state.checkup = False
+
+    # Tampilkan status pilihan (opsional)
+    if "checkup" in st.session_state:
+        st.write(f"Anda memilih: {'Ya' if st.session_state.checkup else 'Tidak'}")
     
     if not st.session_state.checkup:
+        st.info("Nilai default digunakan karena Anda belum pernah melakukan check-up. " \
+        "Nilai ini diambil berdasarkan nilai modus dari data kesehatan individu yang tidak menderita diabetes.")
         st.session_state.glucose = 99
         st.session_state.blood_pressure = 70
         st.session_state.skin_thickness = 27.74
@@ -106,7 +133,7 @@ elif st.session_state.page == 3:
         st.number_input("Tekanan Darah Diastolik (mm/Hg)", value=st.session_state.blood_pressure, disabled=True)
         st.number_input("Ketebalan Lipatan Kulit Trisep (mm)", value=st.session_state.skin_thickness, disabled=True)
         st.number_input("Kadar Insulin (muU/ml)", value=st.session_state.insulin, disabled=True)
-        st.info("Nilai default digunakan karena belum pernah checkup.")
+
     else:
         st.session_state.glucose = st.number_input("Kadar Glukosa", 30, 200, step=1, value=st.session_state.get("glucose", "Input here"))
         st.session_state.blood_pressure = st.number_input("Tekanan Darah Diastolik (mm/Hg)", 40, 150, step=1, value=st.session_state.get("blood_pressure", "Input here"))
@@ -151,9 +178,10 @@ elif st.session_state.page == 4:
         st.error(str(e))
         st.session_state.bmi = 0.0
 
-    st.session_state.riwayat_orangtua = st.radio("Riwayat Diabetes pada Orang Tua", ["Kedua", "Salah satu", "Tidak ada"], 
-                                                  index=["Kedua", "Salah satu", "Tidak ada"].
-                                                  index(st.session_state.get("riwayat_orangtua", "Tidak ada")))
+    st.session_state.riwayat_orangtua = st.radio("Riwayat Diabetes pada Orang Tua", ["Kedua", "Salah satu Ayah/Ibu", "Tidak ada"], 
+                                                  index=["Kedua", "Salah satu Ayah/Ibu", "Tidak ada"].
+                                                  index(st.session_state.get("riwayat_orangtua", "Tidak ada")),
+                                                  horizontal=True)
     st.session_state.riwayat_kakek = st.checkbox("Riwayat Diabetes pada Kakek/Nenek", value=st.session_state.get("riwayat_kakek", False))
 
     col1, col2 = st.columns(2)
@@ -200,13 +228,28 @@ elif st.session_state.page == 5:
 
     # Prediksi
     prediction = model.predict(input_reshaped)
-    label = (prediction[0][0] > 0.5).astype(int)
-    hasil = " POSITIF Diabetes" if label == 1 else " NEGATIF Diabetes"
-    probabilitas = prediction[0][0] 
+    probabilitas = prediction[0][0]
+    label = (probabilitas > 0.5).astype(int)
+    hasil = "POSITIF Diabetes" if label == 1 else "NEGATIF Diabetes"
 
-    st.success(f"Hasil Prediksi : {hasil}")
+    # Menentukan kategori risiko berdasarkan probabilitas
+    if probabilitas < 0.3:
+        risiko = "🟢 Risiko Rendah"
+    elif 0.3 <= probabilitas < 0.6:
+        risiko = "🟡 Risiko Sedang"
+    elif 0.6 <= probabilitas < 0.85:
+        risiko = "🟠 Risiko Tinggi"
+    else:
+        risiko = "🔴 Risiko Sangat Tinggi"
+
+    # Tampilkan hasil
+    st.success(f"Hasil Prediksi: **{hasil}**")
     st.markdown(f"**Probabilitas Positif Diabetes:** `{probabilitas:.2%}`")
+    st.markdown(f"**Kategori Risiko:** {risiko}")
+
+    # Tombol ulangi
     col1, col2, col3, col4, col5 = st.columns([1, 2, 1, 2, 1])
     with col3:
-        st.button("Ulangi", on_click=lambda: st.session_state.update({"page": 1}))
+        st.button("🔁 Ulangi", on_click=lambda: st.session_state.update({"page": 1}))
+
 
