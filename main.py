@@ -68,14 +68,14 @@ elif st.session_state.page == 2:
                                                   index(st.session_state.get("jenis_kelamin", "Perempuan")))
 
     if st.session_state.jenis_kelamin != "Perempuan" or (
-    st.session_state.age is not None and st.session_state.age <= 12):
+    st.session_state.age is not None and st.session_state.age <= 10):
         st.session_state.pregnancies = 0
         st.number_input("Berapa kali Anda pernah hamil?", value=0, disabled=True)
 
         if st.session_state.jenis_kelamin != "Perempuan":
             st.info("Jumlah kehamilan tidak relevan untuk laki-laki.")
         else:
-            st.info("Jumlah kehamilan hanya relevan untuk perempuan berusia di atas 12 tahun.")
+            st.info("Jumlah kehamilan hanya relevan untuk perempuan berusia di atas 10 tahun.")
     else:
         st.session_state.pregnancies = st.number_input(
         "Berapa kali Anda pernah hamil?",
