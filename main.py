@@ -35,11 +35,12 @@ def tampilkan_footer():
         bottom: 0;
         left: 50%;
         transform: translateX(-50%);
-        width: 90%; /* Atur agar tidak selebar layar */
-        max-width: 700px; /* Sesuaikan dengan lebar konten Streamlit default */
+        width: 90%;
+        max-width: 700px;
         background-color: white;
-        padding: 10px 20px;
-        font-size: 12px;
+        padding: 6px 15px; /* Lebih kecil agar tidak terlalu tinggi */
+        font-size: 11px;
+        line-height: 1.3; /* Rapatkan jarak antar baris */
         color: #555;
         text-align: left;
         border-top: 1px solid #eee;
@@ -53,7 +54,7 @@ def tampilkan_footer():
     <div class="footnote-container">
         <em>Supervised by Mrs. Retno Aulia Vinarti, S.Kom., M.Kom., Ph.D.</em><br>
         <em>Developed by Nisa Salvia Najmi, a student of the Information Systems Department, Institut Teknologi Sepuluh Nopember, Class of 2021.</em><br>
-        <a href="mailto:nisasalvia96@gmail.com">nisasalvia96@gmail.com</a><br><br>
+        <a href="mailto:nisasalvia96@gmail.com">nisasalvia96@gmail.com</a>
     </div>
     """, unsafe_allow_html=True)
 
@@ -248,13 +249,13 @@ elif st.session_state.page == 2:
     error_messages = []
 
     # Navigasi
-    col_kiri, col_tengah, col_kanan = st.columns([2, 10, 1])
+    col_kiri, col_tengah, col_kanan = st.columns([2, 10, 2])
 
     with col_kiri:
-        st.button("⬅", on_click=prev_page)
+        st.button("Kembali", on_click=prev_page)
 
     with col_kanan:
-        lanjut_dipencet = st.button("⮕")
+        lanjut_dipencet = st.button("Lanjut")
 
     if lanjut_dipencet:
         st.session_state["lanjut_dipencet"] = True
@@ -343,14 +344,17 @@ elif st.session_state.page == 3:
         st.session_state.skin_thickness = st.number_input("Ketebalan Lipatan Kulit Trisep (mm)", value=27.74, disabled=True)
         st.session_state.insulin = st.number_input("Kadar Insulin (muU/ml)", value=102.05, disabled=True)
 
+    st.write("")
+    st.write("")
+
     # Navigasi tombol (panah)
-    col_kiri, col_tengah, col_kanan = st.columns([2, 10, 1])
+    col_kiri, col_tengah, col_kanan = st.columns([2, 10, 2])
 
     with col_kiri:
-        st.button("⬅", on_click=prev_page)
+        st.button("Kembali", on_click=prev_page)
 
     with col_kanan:
-        lanjut_ditekan = st.button("⮕", key="lanjut_checkup")
+        lanjut_ditekan = st.button("Prediksi", key="lanjut_checkup")
 
     # Tampilkan error jika tombol ditekan dan belum ada pilihan
     if lanjut_ditekan:
