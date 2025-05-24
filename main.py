@@ -7,9 +7,12 @@ from tensorflow.keras.models import load_model
 from utils.dpf_logic import hitung_dpf
 from utils.bmi import hitung_bmi
 
-# --- Load CNN Model ---
+@st.cache_resource
+def load_cnn_model(path):
+    return load_model(path)
+
 model_path = os.path.join("model", "cnn_model.h5") 
-model = load_model(model_path)
+model = load_cnn_model(model_path)
 
 # --- Load Scalers ---
 with open(os.path.join("model", "scaler_standard.pkl"), "rb") as f:
