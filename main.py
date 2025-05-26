@@ -30,7 +30,7 @@ def next_page():
 def prev_page():
     st.session_state.page -= 1
 
-def tampilkan_footer():
+def footer():
     st.markdown("""
     <style>
     .footnote-container {
@@ -41,9 +41,9 @@ def tampilkan_footer():
         width: 90%;
         max-width: 700px;
         background-color: white;
-        padding: 6px 15px; /* Lebih kecil agar tidak terlalu tinggi */
+        padding: 6px 15px; 
         font-size: 11px;
-        line-height: 1.3; /* Rapatkan jarak antar baris */
+        line-height: 1.3; 
         color: #555;
         text-align: left;
         border-top: 1px solid #eee;
@@ -63,14 +63,13 @@ def tampilkan_footer():
 
 st.markdown("""
     <style>
-        /* Ubah background jadi putih */
+        /*background*/
         .stApp {
             background-color: white;
         }
 
-        /* Ganti semua tombol dengan warna hijau */
         div.stButton > button {
-            background-color: #28a745;  /* Hijau */
+            background-color: #28a745;  
             color: white;
             border: none;
             padding: 0.5em 1em;
@@ -78,7 +77,6 @@ st.markdown("""
             font-weight: bold;
         }
 
-        /* Hover effect tombol */
         div.stButton > button:hover {
             background-color: #218838;
             color: white;
@@ -102,7 +100,6 @@ if st.session_state.page == 1:
     Apakah Anda sudah membaca dan memaham ketentuan di atas?
     """)
 
-
     ketentuan = st.checkbox(
     "Ya, saya sudah membaca dengan seksama dan setuju memberikan data pribadi dan data kesehatan saya", 
     value=st.session_state.get("ketentuan", False)
@@ -116,7 +113,7 @@ if st.session_state.page == 1:
         disabled=not ketentuan 
     )
     
-    tampilkan_footer()
+    footer()
 
 # ---------------- Page 2: Data Diri ----------------
 elif st.session_state.page == 2:
@@ -132,7 +129,6 @@ elif st.session_state.page == 2:
         value=None,
         placeholder="Masukkan usia Anda"
     )
-
 
     # Jenis Kelamin
     st.session_state.jenis_kelamin = st.selectbox(
@@ -157,7 +153,6 @@ elif st.session_state.page == 2:
     )
     else:
         st.session_state.pregnancies = 0
-
 
     # Berat dan Tinggi Badan
     st.session_state.berat = st.number_input(
@@ -258,10 +253,10 @@ elif st.session_state.page == 2:
         st.button("Kembali", on_click=prev_page)
 
     with col_kanan:
-        lanjut_dipencet = st.button("Lanjut")
+        lanjut = st.button("Lanjut")
 
-    if lanjut_dipencet:
-        st.session_state["lanjut_dipencet"] = True
+    if lanjut:
+        st.session_state["lanjut"] = True
 
         valid_input = True
         error_messages = []
@@ -308,14 +303,14 @@ elif st.session_state.page == 2:
             next_page()
 
     # Tampilkan error hanya jika tombol "lanjut" ditekan
-    if st.session_state.get("lanjut_dipencet"):
+    if st.session_state.get("lanjut"):
         if not riwayat_valid:
             st.error(warning_message)
         elif error_messages:
             daftar_kekurangan = ", ".join(msg.split(" wajib")[0] for msg in error_messages if "wajib" in msg)
             st.error(f"Silakan lengkapi data berikut terlebih dahulu: {daftar_kekurangan}")
 
-    tampilkan_footer()
+    footer()
 # ---------------- Page 3: Data Kesehatan ----------------
 elif st.session_state.page == 3:
     st.header("Data Kesehatan")
@@ -361,7 +356,7 @@ elif st.session_state.page == 3:
 
     # Tampilkan error jika tombol ditekan dan belum ada pilihan
     if lanjut_ditekan:
-        st.session_state["lanjut_dipencet"] = True
+        st.session_state["lanjut"] = True
 
         if "checkup" not in st.session_state:
             st.error("Mohon pilih apakah Anda pernah check-up terlebih dahulu.")
@@ -375,7 +370,7 @@ elif st.session_state.page == 3:
         else:
             next_page()
 
-    tampilkan_footer()
+    footer()
 
 # ---------------- Page 5: Hasil Prediksi ----------------
 elif st.session_state.page == 4:
@@ -473,5 +468,5 @@ elif st.session_state.page == 4:
     with col3:
         st.button("Ulangi", on_click=lambda: st.session_state.update({"page": 1}))
 
-    tampilkan_footer()
+    footer()
 
