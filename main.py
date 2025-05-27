@@ -40,17 +40,11 @@ def footer():
         transform: translateX(-50%);
         width: 90%;
         max-width: 700px;
-        background-color: white;
         padding: 6px 15px; 
         font-size: 11px;
         line-height: 1.3; 
-        color: #555;
         text-align: left;
-        border-top: 1px solid #eee;
         z-index: 100;
-    }
-    .footnote-container a {
-        color: #555;
     }
     </style>
 
@@ -61,26 +55,24 @@ def footer():
     </div>
     """, unsafe_allow_html=True)
 
+
 st.markdown("""
     <style>
-        /*background*/
-        .stApp {
-            background-color: white;
-        }
+    /* Button */
+    div.stButton > button {
+        background-color: #28a745;  
+        color: white !important;
+        border: none;
+        padding: 0.5em 1em;
+        border-radius: 5px;
+        font-weight: bold;
+    }
 
-        div.stButton > button {
-            background-color: #28a745;  
-            color: white;
-            border: none;
-            padding: 0.5em 1em;
-            border-radius: 5px;
-            font-weight: bold;
-        }
+    div.stButton > button:hover {
+        background-color: #218838;
+        color: white !important;
+    }
 
-        div.stButton > button:hover {
-            background-color: #218838;
-            color: white;
-        }
     </style>
 """, unsafe_allow_html=True)
 
@@ -114,7 +106,6 @@ if st.session_state.page == 1:
     )
     
     footer()
-
 # ---------------- Page 2: Data Diri ----------------
 elif st.session_state.page == 2:
     st.header("Data Diri")
@@ -122,9 +113,8 @@ elif st.session_state.page == 2:
     # Usia
     st.session_state.age = st.number_input(
         "Usia",
-        min_value=8,
-        max_value=120,
-        step=1,
+        min_value=10,
+        max_value=100,
         format="%d",
         value=None,
         placeholder="Masukkan usia Anda"
@@ -141,13 +131,12 @@ elif st.session_state.page == 2:
     if (
         st.session_state.jenis_kelamin == "Perempuan"
         and st.session_state.age is not None
-        and st.session_state.age > 10
+        and st.session_state.age > 12
     ):
         st.session_state.pregnancies = st.number_input(
         "Berapa kali Anda pernah hamil?",
         min_value=0,
         max_value=20,
-        step=1,
         value=None,
         placeholder="Masukkan jumlah kehamilan"
     )
@@ -159,7 +148,6 @@ elif st.session_state.page == 2:
         "Berat Badan (kg)",
         min_value=1.0,
         max_value=200.0,
-        step=0.1,
         format="%.1f",
         value=None,
         placeholder="Masukkan berat badan Anda"
@@ -169,7 +157,6 @@ elif st.session_state.page == 2:
         "Tinggi Badan (cm)",
         min_value=30,
         max_value=250,
-        step=1,
         format="%d",
         value=None,
         placeholder="Masukkan tinggi badan Anda"
@@ -219,47 +206,24 @@ elif st.session_state.page == 2:
         key="riwayat_diabetes_keluarga"
     )
 
-    # Validasi pilihan riwayat
-    riwayat_valid = True
-    warning_message = ""
-
-    if "Tidak Ada Riwayat" in riwayat_terpilih and len(riwayat_terpilih) > 1:
-        riwayat_valid = False
-        warning_message = "Jika memilih 'Tidak Ada Riwayat', tidak boleh memilih pilihan lain."
-
-    if "Kedua Orang Tua" in riwayat_terpilih and "Salah satu Orang Tua" in riwayat_terpilih:
-        riwayat_valid = False
-        warning_message = "Pilih hanya satu dari 'Kedua Orang Tua' atau 'Salah satu Orang Tua'."
-
-    if not riwayat_valid:
-        st.warning(warning_message)
-
-    if riwayat_valid:
-        if "Kedua Orang Tua" in riwayat_terpilih:
-            st.session_state.riwayat_orangtua = "Kedua"
-        elif "Salah satu Orang Tua" in riwayat_terpilih:
-            st.session_state.riwayat_orangtua = "Salah satu Ayah/Ibu"
-        else:
-            st.session_state.riwayat_orangtua = "Tidak ada"
-
+    # Simpan info jika memilih "Kakek/Nenek"
     st.session_state.riwayat_kakek = "Kakek/Nenek" in riwayat_terpilih
-
-    error_messages = []
 
     # Navigasi
     col_kiri, col_tengah, col_kanan = st.columns([2, 10, 2])
-
     with col_kiri:
         st.button("Kembali", on_click=prev_page)
-
     with col_kanan:
         lanjut = st.button("Lanjut")
 
+    # Inisialisasi status error
+    valid_input = True
+    error_messages = []
+    warning_message = ""
+    riwayat_valid = True
+
     if lanjut:
         st.session_state["lanjut"] = True
-
-        valid_input = True
-        error_messages = []
 
         # Validasi usia
         if st.session_state.age is None:
@@ -282,27 +246,23 @@ elif st.session_state.page == 2:
             error_messages.append("Jumlah kehamilan wajib diisi untuk perempuan usia di atas 10 tahun.")
 
         # Validasi riwayat diabetes keluarga
-        riwayat_terpilih = st.session_state.riwayat_diabetes_keluarga
-        riwayat_valid = True
-        warning_message = ""
-
         if not riwayat_terpilih:
-            riwayat_valid = False
             warning_message = "Riwayat Diabetes Keluarga wajib diisi."
+            riwayat_valid = False
             valid_input = False
         elif "Tidak Ada Riwayat" in riwayat_terpilih and len(riwayat_terpilih) > 1:
-            riwayat_valid = False
             warning_message = "Jika memilih 'Tidak Ada Riwayat', tidak boleh memilih pilihan lain."
+            riwayat_valid = False
             valid_input = False
         elif "Kedua Orang Tua" in riwayat_terpilih and "Salah satu Orang Tua" in riwayat_terpilih:
-            riwayat_valid = False
             warning_message = "Pilih hanya satu dari 'Kedua Orang Tua' atau 'Salah satu Orang Tua'."
+            riwayat_valid = False
             valid_input = False
 
         if valid_input:
             next_page()
 
-    # Tampilkan error hanya jika tombol "lanjut" ditekan
+    # Tampilkan error hanya jika tombol "Lanjut" ditekan
     if st.session_state.get("lanjut"):
         if not riwayat_valid:
             st.error(warning_message)
@@ -372,7 +332,7 @@ elif st.session_state.page == 3:
 
     footer()
 
-# ---------------- Page 5: Hasil Prediksi ----------------
+# ---------------- Page 4: Hasil Prediksi ----------------
 elif st.session_state.page == 4:
     st.header("Hasil Prediksi Risiko Diabetes")
     dpf = hitung_dpf(st.session_state.riwayat_orangtua, st.session_state.jenis_kelamin, st.session_state.riwayat_kakek)
@@ -413,13 +373,13 @@ elif st.session_state.page == 4:
     label = (probabilitas > 0.5).astype(int)
 
     # Tentukan hasil dan risiko
-    if probabilitas < 0.3:
+    if probabilitas < 0.25:
         risiko = "🟢 Risiko Rendah"
         pesan = "Probabilitas Anda untuk mengidap diabetes tergolong rendah. Tetaplah menjaga pola hidup sehat dan lakukan pemeriksaan secara berkala."
-    elif 0.3 <= probabilitas < 0.6:
+    elif 0.25 <= probabilitas < 0.5:
         risiko = "🟡 Risiko Sedang"
         pesan = "Anda memiliki kemungkinan sedang untuk mengidap diabetes. Disarankan untuk mulai memperhatikan pola makan, aktivitas fisik, dan berkonsultasi dengan tenaga medis."
-    elif 0.6 <= probabilitas < 0.85:
+    elif 0.5 <= probabilitas < 0.75:
         risiko = "🟠 Risiko Tinggi"
         pesan = "Kemungkinan Anda mengidap diabetes cukup tinggi. Sebaiknya segera lakukan pemeriksaan medis dan ubah gaya hidup ke arah yang lebih sehat."
     else:
