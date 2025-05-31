@@ -6,6 +6,7 @@ import os
 from tensorflow.keras.models import load_model
 from utils.dpf_logic import hitung_dpf
 from utils.bmi import hitung_bmi
+import logging
 
 @st.cache_resource
 def load_cnn_model(path):
@@ -13,6 +14,8 @@ def load_cnn_model(path):
 
 model_path = os.path.join("model", "cnn_model.h5") 
 model = load_cnn_model(model_path)
+
+logging.basicConfig(filename="prediction_log.txt", level=logging.INFO)
 
 # --- Load Scalers ---
 with open(os.path.join("model", "scaler_standard.pkl"), "rb") as f:
@@ -205,6 +208,12 @@ elif st.session_state.page == 2:
         default=default_pilihan,
         key="riwayat_diabetes_keluarga"
     )
+    if "Kedua Orang Tua" in riwayat_terpilih:
+        st.session_state.riwayat_orangtua = "kedua"
+    elif "Salah satu Orang Tua" in riwayat_terpilih:
+        st.session_state.riwayat_orangtua = "salah_satu"
+    else:
+        st.session_state.riwayat_orangtua = "tidak"
 
     # Simpan info jika memilih "Kakek/Nenek"
     st.session_state.riwayat_kakek = "Kakek/Nenek" in riwayat_terpilih
@@ -430,3 +439,25 @@ elif st.session_state.page == 4:
 
     footer()
 
+    data_user = {
+        "Pregnancies": [st.session_state.pregnancies],
+        "Glucose": [st.session_state.glucose],
+        "BloodPressure": [st.session_state.blood_pressure],
+        "SkinThickness": [st.session_state.skin_thickness],
+        "Insulin": [st.session_state.insulin],
+        "BMI": [st.session_state.bmi],
+        "DPF": [dpf],  # tetap dihitung dari input asli
+        "Age": [st.session_state.age],
+        "Prediction": [label],
+        "Probability": [round(probabilitas, 4)]
+    }
+
+    # Ubah ke DataFrame
+    df_user = pd.DataFrame(data_user)
+
+    # Simpan ke CSV (append jika sudah ada, buat baru jika belum)
+    csv_path = "result/prediction_log.csv"
+    if os.path.exists(csv_path):
+        df_user.to_csv(csv_path, mode="a", index=False, header=False)
+    else:
+        df_user.to_csv(csv_path, index=False)
