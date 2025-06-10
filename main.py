@@ -92,7 +92,7 @@ if st.session_state.page == 1:
 
     Dataset yang digunakan adalah [Pima Indians Diabetes Database](https://www.kaggle.com/datasets/uciml/pima-indians-diabetes-database).
 
-    Apakah Anda sudah membaca dan memaham ketentuan di atas?
+    Apakah Anda sudah membaca dan memahami ketentuan di atas?
     """)
 
     ketentuan = st.checkbox(
