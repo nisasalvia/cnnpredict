@@ -7,7 +7,6 @@ from tensorflow.keras.models import load_model
 from utils.dpf_logic import hitung_dpf
 from utils.bmi import hitung_bmi
 
-
 # --- Load CNN Model ---
 model_path = os.path.join("model", "cnn_model.h5") 
 model = load_model(model_path)

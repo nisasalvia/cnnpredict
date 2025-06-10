@@ -209,11 +209,11 @@ elif st.session_state.page == 2:
         key="riwayat_diabetes_keluarga"
     )
     if "Kedua Orang Tua" in riwayat_terpilih:
-        st.session_state.riwayat_orangtua = "kedua"
+        st.session_state.riwayat_orangtua = "Kedua"
     elif "Salah satu Orang Tua" in riwayat_terpilih:
-        st.session_state.riwayat_orangtua = "salah_satu"
+        st.session_state.riwayat_orangtua = "Salah satu Ayah/Ibu"
     else:
-        st.session_state.riwayat_orangtua = "tidak"
+        st.session_state.riwayat_orangtua = "Tidak ada"
 
     # Simpan info jika memilih "Kakek/Nenek"
     st.session_state.riwayat_kakek = "Kakek/Nenek" in riwayat_terpilih
@@ -297,10 +297,10 @@ elif st.session_state.page == 3:
 
     # Tampilkan form input jika Ya
     if st.session_state.get("checkup") is True:
-        st.session_state.glucose = st.number_input("Kadar Glukosa (mg/dL)", min_value=30, max_value=200, value=None, placeholder="Masukkan kadar glukosa")
+        st.session_state.glucose = st.number_input("Kadar Glukosa (mg/dL)", min_value=30, max_value=250, value=None, placeholder="Masukkan kadar glukosa")
         st.session_state.blood_pressure = st.number_input("Tekanan Darah Diastolik (mm/Hg)", min_value=40, max_value=150, value=None, placeholder="Masukkan tekanan darah")
-        st.session_state.skin_thickness = st.number_input("Ketebalan Lipatan Kulit Trisep (mm)", min_value=3.0, max_value=100.0, value=None, placeholder="Masukkan ketebalan kulit", format="%.1f")
-        st.session_state.insulin = st.number_input("Kadar Insulin (muU/ml)", min_value=2.0, max_value=1000.0, value=None, placeholder="Masukkan kadar insulin", format="%.1f")
+        st.session_state.skin_thickness = st.number_input("Ketebalan Lipatan Kulit Trisep (mm)", min_value=10.0, max_value=80.0, value=None, placeholder="Masukkan ketebalan kulit", format="%.1f")
+        st.session_state.insulin = st.number_input("Kadar Insulin (muU/ml)", min_value=30.0, max_value=400.0, value=None, placeholder="Masukkan kadar insulin", format="%.1f")
     elif st.session_state.get("checkup") is False:
         st.info(
             "Nilai default digunakan karena belum pernah checkup. "
